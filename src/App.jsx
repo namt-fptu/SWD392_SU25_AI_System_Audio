@@ -7,6 +7,8 @@ import Dashboard from '../pages/dashboard/Dashboard';
 import MarketingPage from '../pages/marketing-page/MarketingPage';
 import SignIn from '../pages/sign-in-side/SignInSide';
 import SignUp from '../pages/sign-up/SignUp'; 
+import ChatPage from '../pages/chatPage/chatPage';
+
 function App() {
   return (
     <AppTheme>
@@ -17,6 +19,8 @@ function App() {
            <Route path="/dashboard" element={<Dashboard />} />
            <Route path="/sign-in" element={<SignIn />} />
             <Route path="/sign-up" element={<SignUp />} />
+          <Route path="/chatPage" element={<ChatPage />} />
+
         </Routes>
       </Router>
     </AppTheme>
