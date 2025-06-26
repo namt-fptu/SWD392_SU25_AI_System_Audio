@@ -33,12 +33,12 @@ export default function Dashboard(props) {
   const [prompt, setPrompt] = React.useState('');
   const [file, setFile] = React.useState(null);
   const [generatedLesson, setGeneratedLesson] = React.useState('');
-  const navigate = React.useNavigate();
+  const navigate = useNavigate();
 
   React.useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) {
-      navigate('/sign-in');
+      navigate('/dashboard');
       return;
     }
     axios.get('http://localhost:8080/api/auth/user', {
@@ -49,7 +49,7 @@ export default function Dashboard(props) {
           navigate('/unauthorized');
         }
       })
-      .catch(() => navigate('/sign-in'));
+      .catch(() => navigate('/dashboard'));
   }, [navigate]);
 
   const handlePromptSubmit = async () => {

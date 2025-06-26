@@ -10,6 +10,7 @@ import SelectContent from './SelectContent';
 import MenuContent from './MenuContent';
 import CardAlert from './CardAlert';
 import OptionsMenu from './OptionsMenu';
+import axios from 'axios';
 
 const drawerWidth = 240;
 
@@ -25,6 +26,21 @@ const Drawer = styled(MuiDrawer)({
 });
 
 export default function SideMenu() {
+  const [user, setUser] = React.useState(null);
+
+  React.useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+
+    axios.get('http://localhost:8080/api/auth/user', {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+    .then(res => setUser(res.data))
+    .catch(err => {
+      console.error('Failed to fetch user info:', err);
+    });
+  }, []);
+
   return (
     <Drawer
       variant="permanent"
@@ -56,32 +72,34 @@ export default function SideMenu() {
         <MenuContent />
         <CardAlert />
       </Box>
-      <Stack
-        direction="row"
-        sx={{
-          p: 2,
-          gap: 1,
-          alignItems: 'center',
-          borderTop: '1px solid',
-          borderColor: 'divider',
-        }}
-      >
-        <Avatar
-          sizes="small"
-          alt="Riley Carter"
-          src="/static/images/avatar/7.jpg"
-          sx={{ width: 36, height: 36 }}
-        />
-        <Box sx={{ mr: 'auto' }}>
-          <Typography variant="body2" sx={{ fontWeight: 500, lineHeight: '16px' }}>
-            Riley Carter
-          </Typography>
-          <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-            riley@email.com
-          </Typography>
-        </Box>
-        <OptionsMenu />
-      </Stack>
+
+      {user && (
+        <Stack
+          direction="row"
+          sx={{
+            p: 2,
+            gap: 1,
+            alignItems: 'center',
+            borderTop: '1px solid',
+            borderColor: 'divider',
+          }}
+        >
+          <Avatar
+            alt={User.name}
+            src={user.avatar || '/static/images/avatar/default.jpg'}
+            sx={{ width: 36, height: 36 }}
+          />
+          <Box sx={{ mr: 'auto' }}>
+            <Typography variant="body2" sx={{ fontWeight: 500, lineHeight: '16px' }}>
+              {user.name}
+            </Typography>
+            <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+              {user.email}
+            </Typography>
+          </Box>
+          <OptionsMenu />
+        </Stack>
+      )}
     </Drawer>
   );
 }
