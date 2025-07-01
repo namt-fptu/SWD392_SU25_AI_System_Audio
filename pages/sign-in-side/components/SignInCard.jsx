@@ -94,7 +94,7 @@ export default function SignInCard() {
       // Store the JWT token (e.g., in localStorage or a state management solution)
       localStorage.setItem('token', response.data.token);
       alert(response.data.message || 'Đăng nhập thành công!');
-      navigate('/dashboard'); // Redirect to a dashboard or home page
+      navigate('/lecturerPage'); // Redirect to a dashboard or home page
     } catch (error) {
       alert(error.response?.data?.message || 'Đăng nhập thất bại!');
     }
