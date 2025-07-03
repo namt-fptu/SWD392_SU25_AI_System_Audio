@@ -18,6 +18,11 @@ import ColorModeSelect from '../shared-theme/ColorModeSelect';
 import { GoogleIcon, FacebookIcon, SitemarkIcon } from './components/CustomIcons';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
@@ -61,6 +66,10 @@ const SignUpContainer = styled(Stack)(({ theme }) => ({
   },
 }));
 
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
+
 export default function SignUp(props) {
   const [emailError, setEmailError] = React.useState(false);
   const [emailErrorMessage, setEmailErrorMessage] = React.useState('');
@@ -70,6 +79,9 @@ export default function SignUp(props) {
   const [nameErrorMessage, setNameErrorMessage] = React.useState('');
   const [usernameError, setUsernameError] = React.useState(false);
   const [usernameErrorMessage, setUsernameErrorMessage] = React.useState('');
+  const [snackbarOpen, setSnackbarOpen] = React.useState(false);
+  const [snackbarMessage, setSnackbarMessage] = React.useState('');
+  const [dialogOpen, setDialogOpen] = React.useState(false);
   const navigate = useNavigate();
 
   const validateInputs = () => {
@@ -125,22 +137,27 @@ export default function SignUp(props) {
 
     const data = new FormData(event.currentTarget);
     const name = data.get('name');
+    const username = data.get('username');
     const email = data.get('email');
     const password = data.get('password');
-    const username = data.get('username');
 
     try {
       const response = await axios.post('http://localhost:8080/api/auth/register', {
+        name,
         username,
         email,
         password,
-        fullname: name,
       });
 
-      alert(response.data.message || 'Đăng ký thành công!');
-      navigate('/sign-in'); // Redirect to login page
+      localStorage.setItem('token', response.data.token);
+      setSnackbarMessage(response.data.message || 'Sign up successfully!');
+      setDialogOpen(true);
+      setTimeout(() => {
+        setDialogOpen(false);
+        navigate('/lecturerPage');
+      }, 1500);
     } catch (error) {
-      alert(error.response?.data?.message || 'Đăng ký thất bại!');
+      alert(error.response?.data?.message || 'Sign up failed!');
     }
   };
 
@@ -258,7 +275,7 @@ export default function SignUp(props) {
             <Typography sx={{ textAlign: 'center' }}>
               Already have an account?{' '}
               <Link
-                href="/material-ui/getting-started/templates/sign-in/"
+                href="/sign-in"
                 variant="body2"
                 sx={{ alignSelf: 'center' }}
               >
@@ -267,6 +284,38 @@ export default function SignUp(props) {
             </Typography>
           </Box>
         </Card>
+        <Snackbar
+          open={snackbarOpen}
+          autoHideDuration={1500}
+          onClose={() => setSnackbarOpen(false)}
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        >
+          <Alert onClose={() => setSnackbarOpen(false)} severity="success" sx={{ width: '100%' }}>
+            {snackbarMessage}
+          </Alert>
+        </Snackbar>
+        <Dialog
+          open={dialogOpen}
+          onClose={() => setDialogOpen(false)}
+          maxWidth="xs"
+          fullWidth
+          PaperProps={{
+            sx: {
+              textAlign: 'center',
+              py: 6,
+              borderRadius: 3,
+            },
+          }}
+        >
+          <DialogTitle sx={{ fontSize: 28, fontWeight: 700, pb: 2 }}>
+            {snackbarMessage}
+          </DialogTitle>
+          <DialogContent>
+            <Typography variant="body1" sx={{ fontSize: 18 }}>
+              You will be redirected shortly...
+            </Typography>
+          </DialogContent>
+        </Dialog>
       </SignUpContainer>
     </AppTheme>
   );

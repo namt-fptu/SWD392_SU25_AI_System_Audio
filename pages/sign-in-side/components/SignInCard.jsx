@@ -15,6 +15,11 @@ import ForgotPassword from './ForgotPassword';
 import { GoogleIcon, FacebookIcon, SitemarkIcon } from './CustomIcons';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
+import Dialog from '@mui/material/Dialog';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
@@ -40,6 +45,9 @@ export default function SignInCard() {
   const [passwordError, setPasswordError] = React.useState(false);
   const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
   const [open, setOpen] = React.useState(false);
+  const [snackbarOpen, setSnackbarOpen] = React.useState(false);
+  const [snackbarMessage, setSnackbarMessage] = React.useState('');
+  const [dialogOpen, setDialogOpen] = React.useState(false);
   const navigate = useNavigate();
 
   const handleClickOpen = () => {
@@ -48,6 +56,17 @@ export default function SignInCard() {
 
   const handleClose = () => {
     setOpen(false);
+  };
+
+  const handleSnackbarClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setSnackbarOpen(false);
+  };
+
+  const handleDialogClose = () => {
+    setDialogOpen(false);
   };
 
   const validateInputs = () => {
@@ -91,12 +110,15 @@ export default function SignInCard() {
         password,
       });
 
-      // Store the JWT token (e.g., in localStorage or a state management solution)
       localStorage.setItem('token', response.data.token);
-      alert(response.data.message || 'Đăng nhập thành công!');
-      navigate('/lecturerPage'); // Redirect to a dashboard or home page
+      setSnackbarMessage(response.data.message || 'Login Succesfully');
+      setDialogOpen(true);
+      setTimeout(() => {
+        setDialogOpen(false);
+        navigate('/lecturerPage');
+      }, 1500);
     } catch (error) {
-      alert(error.response?.data?.message || 'Đăng nhập thất bại!');
+      alert(error.response?.data?.message || 'Login Fail!');
     }
   };
 
@@ -171,6 +193,14 @@ export default function SignInCard() {
         <Button type="submit" fullWidth variant="contained" onClick={validateInputs}>
           Sign in
         </Button>
+        <Button
+          fullWidth
+          variant="outlined"
+          sx={{ mt: 1 }}
+          onClick={() => navigate('/')}
+        >
+          Back to Landing Page
+        </Button>
         <Typography sx={{ textAlign: 'center' }}>
           Don&apos;t have an account?{' '}
           <span>
@@ -203,6 +233,38 @@ export default function SignInCard() {
           Sign in with Facebook
         </Button>
       </Box>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={1500}
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <MuiAlert onClose={handleSnackbarClose} severity="success" sx={{ width: '100%' }}>
+          {snackbarMessage}
+        </MuiAlert>
+      </Snackbar>
+      <Dialog
+        open={dialogOpen}
+        onClose={handleDialogClose}
+        maxWidth="xs"
+        fullWidth
+        PaperProps={{
+          sx: {
+            textAlign: 'center',
+            py: 6,
+            borderRadius: 3,
+          },
+        }}
+      >
+        <DialogTitle sx={{ fontSize: 28, fontWeight: 700, pb: 2 }}>
+          {snackbarMessage}
+        </DialogTitle>
+        <DialogContent>
+          <Typography variant="body1" sx={{ fontSize: 18 }}>
+            Bạn sẽ được chuyển trang trong giây lát...
+          </Typography>
+        </DialogContent>
+      </Dialog>
     </Card>
   );
 }
