@@ -116,19 +116,17 @@ export default function Dashboard(props) {
                       elevation={3}
                       sx={{ p: 3, width: '100%', borderRadius: 2 }}
                     >
-                      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mb: 2 }}>
+                      <Box
+                      component={'form'} 
+                      sx={{ '& > :not(style)': { m: 1, width: '100%' } }}
+                      noValidate
+                      autoComplete="off">
                         <Typography variant="h6" gutterBottom sx={{ display: 'block' }}>
                           Create a Lesson with AI
                         </Typography>
-                        <TextField
-                          fullWidth
-                          multiline
-                          rows={4}
-                          label="Enter your lesson prompt"
-                          value={prompt}
-                          onChange={(e) => setPrompt(e.target.value)}
-                          variant="outlined"
-                        />
+                        <TextField  id="standard-basic" label="Enter your lesson prompt" value={prompt}
+                          onChange={(e) => setPrompt(e.target.value)} variant="standard" />
+                       
                       </Box>
                       <Box sx={{ mb: 2 }}>
                         <Button

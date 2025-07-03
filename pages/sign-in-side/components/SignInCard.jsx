@@ -175,7 +175,7 @@ export default function SignInCard() {
           Don&apos;t have an account?{' '}
           <span>
             <Link
-              href="/material-ui/getting-started/templates/sign-up/"
+              href="/sign-up"
               variant="body2"
               sx={{ alignSelf: 'center' }}
             >
