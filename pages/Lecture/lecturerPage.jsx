@@ -72,14 +72,20 @@ export default function Dashboard(props) {
       if (prompt) formData.append('prompt', prompt);
       if (file) formData.append('file', file);
 
-      const response = await axios.post('http://localhost:8080/api/lessons/generate', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          Authorization: `Bearer ${localStorage.getItem('token')}`
+     const token = localStorage.getItem('token');
+      const response = await axios.post(
+        'http://localhost:8080/api/lessons/', // Sử dụng endpoint đúng từ backend
+        { title: 'Generated Lesson', text_content: prompt, language: 'en' }, // Gửi dữ liệu theo schema backend
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
         }
-      });
+      );
 
-      setGeneratedLesson(response.data.lesson || 'Lesson generated successfully!');
+      setGeneratedLesson(response.data || 'Lesson generated successfully!');
+
       setPrompt('');
       setFile(null);
       setSnackbarMessage(response.data.message || 'Lesson generated successfully!');
@@ -169,13 +175,24 @@ export default function Dashboard(props) {
                   Generate Lesson
                 </Button>
               </Paper>
-              {generatedLesson && (
-                <Paper
-                  elevation={3}
-                  sx={{ p: 3, width: '100%', borderRadius: 2, mt: 2 }}
-                >
+             {generatedLesson && (
+                <Paper elevation={3} sx={{ p: 3, width: '100%', borderRadius: 2, mt: 2 }}>
                   <Typography variant="h6">Generated Lesson</Typography>
-                  <Typography>{generatedLesson}</Typography>
+                  <Typography variant="subtitle1">Title: {generatedLesson.lesson.title}</Typography>
+                  <Typography sx={{ mt: 1 }}>Content: {generatedLesson.lesson.text_content}</Typography>
+                  <Typography variant="subtitle1" sx={{ mt: 2 }}>Segments:</Typography>
+                  {generatedLesson.segments.map((segment, index) => (
+                    <Typography key={index} sx={{ ml: 2 }}>
+                      - {segment.text} (Start: {segment.start_time}s, Duration: {segment.duration}s)
+                    </Typography>
+                  ))}
+                  <Typography variant="subtitle1" sx={{ mt: 2 }}>Slides:</Typography>
+                  {generatedLesson.slides.map((slide, index) => (
+                    <Box key={index} sx={{ ml: 2 }}>
+                      <Typography>Slide {slide.order_index}: {slide.image_url}</Typography>
+                      <img src={slide.image_url} alt={`Slide ${slide.order_index}`} width="200" />
+                    </Box>
+                  ))}
                 </Paper>
               )}
             </Stack>

@@ -84,11 +84,7 @@ export default function SideMenu() {
             borderColor: 'divider',
           }}
         >
-          <Avatar
-            alt={User.name}
-            src={user.avatar || '/static/images/avatar/default.jpg'}
-            sx={{ width: 36, height: 36 }}
-          />
+          
           <Box sx={{ mr: 'auto' }}>
             <Typography variant="body2" sx={{ fontWeight: 500, lineHeight: '16px' }}>
               {user.name}

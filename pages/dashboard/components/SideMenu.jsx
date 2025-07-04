@@ -77,7 +77,7 @@ export default function SideMenu() {
           }}
         >
           <Avatar
-            alt={User.name}
+            alt={user.name}
             src={user.avatar || '/static/images/avatar/default.jpg'}
             sx={{ width: 36, height: 36 }}
           />
