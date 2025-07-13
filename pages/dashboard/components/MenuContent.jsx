@@ -59,57 +59,109 @@ export default function MenuContent() {
 
       {/* Menu chính */}
       <List>
-        {mainListItems.map((item, index) => (
-          <ListItem key={index} disablePadding sx={{ mb: 1, borderRadius: 2 }}>
-            <ListItemButton
-              component={RouterLink}
-              to={item.to}
-              sx={{
-                borderRadius: 2,
-                '&.Mui-selected, &.Mui-selected:hover': {
-                  bgcolor: theme.palette.action.selected, // dùng màu selected mặc định của theme
-                },
-              }}
-              selected={window.location.pathname === item.to}
-            >
-              <ListItemIcon sx={{ color: 'inherit' }}>{item.icon}</ListItemIcon>
-              <ListItemText primary={item.text} />
-            </ListItemButton>
-          </ListItem>
-        ))}
+        {mainListItems.map((item, index) => {
+          const selected = window.location.pathname === item.to;
+          return (
+            <ListItem key={index} disablePadding sx={{ mb: 1, borderRadius: 2 }}>
+              <ListItemButton
+                component={RouterLink}
+                to={item.to}
+                sx={{
+                  borderRadius: 2,
+                  px: 2,
+                  py: 1.2,
+                  transition: 'background 0.2s',
+                  color: selected
+                    ? theme.palette.primary[theme.palette.mode === 'light' ? 'dark' : 'contrastText']
+                    : theme.palette.text.primary,
+                  bgcolor: selected
+                    ? theme.palette.primary.light
+                    : 'transparent',
+                  fontWeight: selected ? 700 : 400,
+                  '&:hover': {
+                    bgcolor: theme.palette.action.hover,
+                    color: theme.palette.primary.main,
+                    boxShadow: 2,
+                  },
+                }}
+                selected={selected}
+              >
+                <ListItemIcon sx={{
+                  color: selected
+                    ? theme.palette.primary.main
+                    : theme.palette.text.secondary,
+                  minWidth: 40
+                }}>
+                  {item.icon}
+                </ListItemIcon>
+                <ListItemText primary={item.text} />
+              </ListItemButton>
+            </ListItem>
+          );
+        })}
       </List>
 
       <Divider sx={{ my: 2 }} />
 
       {/* Menu phụ và Log out */}
       <List>
-        {secondaryListItems.map((item, index) => (
-          <ListItem key={index} disablePadding sx={{ mb: 1, borderRadius: 2 }}>
-            <ListItemButton
-              component={RouterLink}
-              to={item.to}
-              sx={{ borderRadius: 2 }}
-              selected={window.location.pathname === item.to}
-            >
-              <ListItemIcon sx={{ color: 'inherit' }}>{item.icon}</ListItemIcon>
-              <ListItemText primary={item.text} />
-            </ListItemButton>
-          </ListItem>
-        ))}
+        {secondaryListItems.map((item, index) => {
+          const selected = window.location.pathname === item.to;
+          return (
+            <ListItem key={index} disablePadding sx={{ mb: 1, borderRadius: 2 }}>
+              <ListItemButton
+                component={RouterLink}
+                to={item.to}
+                sx={{
+                  borderRadius: 2,
+                  px: 2,
+                  py: 1.2,
+                  color: selected
+                    ? theme.palette.primary[theme.palette.mode === 'light' ? 'dark' : 'contrastText']
+                    : theme.palette.text.primary,
+                  bgcolor: selected
+                    ? theme.palette.primary.light
+                    : 'transparent',
+                  fontWeight: selected ? 700 : 400,
+                  '&:hover': {
+                    bgcolor: theme.palette.action.hover,
+                    color: theme.palette.primary.main,
+                    boxShadow: 2,
+                  },
+                }}
+                selected={selected}
+              >
+                <ListItemIcon sx={{
+                  color: selected
+                    ? theme.palette.primary.main
+                    : theme.palette.text.secondary,
+                  minWidth: 40
+                }}>
+                  {item.icon}
+                </ListItemIcon>
+                <ListItemText primary={item.text} />
+              </ListItemButton>
+            </ListItem>
+          );
+        })}
         {/* Log out button */}
         <ListItem disablePadding sx={{ borderRadius: 2 }}>
           <ListItemButton
             onClick={handleLogout}
             sx={{
               borderRadius: 2,
+              px: 2,
+              py: 1.2,
               color: theme.palette.error.main,
+              fontWeight: 700,
               '&:hover': {
                 bgcolor: theme.palette.error.light,
                 color: theme.palette.error.contrastText,
+                boxShadow: 2,
               },
             }}
           >
-            <ListItemIcon sx={{ color: 'inherit' }}>
+            <ListItemIcon sx={{ color: 'inherit', minWidth: 40 }}>
               <LogoutRoundedIcon />
             </ListItemIcon>
             <ListItemText primary="Log out" />
